@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Livewire;
+
+use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
+
+class ModalCartCount extends Component
+{
+
+    public $count = 0;
+
+
+    protected $listeners = [
+        'added_product_to_cart',
+        'deleted_product_from_cart'
+    ];
+
+
+    public function render()
+    {
+        if (Auth::guard('customer')->check()) {
+            \Cart::session(Auth::guard('customer')->id());
+
+        }
+        $this->count = \Cart::getContent()->count();
+        return view('livewire.modal-cart-count');
+    }
+
+
+    public function added_product_to_cart()
+    {
+        $this->render();
+    }
+
+    public function deleted_product_from_cart()
+    {
+        $this->render();
+    }
+}

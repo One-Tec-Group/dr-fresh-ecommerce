@@ -1,0 +1,1 @@
+@extends('ecommerce::frontend.home.home')
