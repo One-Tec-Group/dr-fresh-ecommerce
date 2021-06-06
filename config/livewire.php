@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'asset_url' => env('APP_URL','https://dr-fresh.net/public'),
+    'asset_url' => null,
 
     /*
     |--------------------------------------------------------------------------

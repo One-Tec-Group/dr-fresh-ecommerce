@@ -105,12 +105,13 @@
     </section>
 
 
+    {{--@dd($product)--}}
     <section class="product-items-slider section-padding bg-white border-top">
         <div class="container">
             <div class="section-header">
                 <h5 class="heading-design-h5">@lang('ecommerce::locale.products_like')<span
-                        class="badge badge-primary">{{$product->category->name ?? ''}}</span>
-                    <a class="float-right text-secondary"  href="{{url('ecommerce/products?category='.$product->category->id)}}">@lang('ecommerce::locale.view_all')</a>
+                        class="badge badge-primary">{{$product->category && $product->category->name ? $product->category->name : ''}}</span>
+                    <a class="float-right text-secondary"  href="{{url('ecommerce/products?category='. $product->category && $product->category->id ? $product->category->id : '')}}">@lang('ecommerce::locale.view_all')</a>
                 </h5>
             </div>
             <div class="owl-carousel owl-carousel-featured">
