@@ -25,7 +25,7 @@ Route::prefix('ecommerce')->group(function() {
 
 
     //Add Coupon
-    Route::get('/coupon', 'CheckoutController@add_coupon')->name('ecommerce.coupon');
+    Route::post('/coupon', 'CheckoutController@add_coupon')->name('ecommerce.coupon');
 
 
 

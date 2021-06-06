@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Product;
 use Illuminate\Support\Facades\Auth;
+use Modules\Ecommerce\Http\Controllers\CartsController;
 
 class ModalCart extends Component
 {
@@ -51,6 +52,8 @@ class ModalCart extends Component
 
 
             $price = (double)$product->variations->first()->default_sell_price;
+        $cart_controller = new CartsController();
+        $price = $cart_controller->set_discount($product,$price) ?? $price;
 
 
         if ($this->check_quantity($product, $check_cart->quantity + 1)) {
@@ -79,7 +82,8 @@ class ModalCart extends Component
 
 
             $price = (double)$product->variations->first()->default_sell_price;
-
+        $cart_controller = new CartsController();
+        $price = $cart_controller->set_discount($product,$price) ?? $price;
 
         if ($check_cart->quantity > 1) {
 

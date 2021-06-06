@@ -109,7 +109,7 @@
         var url = @json(route('ecommerce.coupon'));
         $.ajax({
             url: url,
-            type:"GET",
+            type:"POST",
             data:{
                 coupon:coupon,
             },
