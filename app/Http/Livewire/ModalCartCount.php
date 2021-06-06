@@ -12,8 +12,8 @@ class ModalCartCount extends Component
 
 
     protected $listeners = [
-        'added_product_to_cart',
-        'deleted_product_from_cart'
+        'added_product_to_cart' => 'render',
+        'deleted_product_from_cart' => 'render'
     ];
 
 
@@ -28,13 +28,4 @@ class ModalCartCount extends Component
     }
 
 
-    public function added_product_to_cart()
-    {
-        $this->render();
-    }
-
-    public function deleted_product_from_cart()
-    {
-        $this->render();
-    }
 }

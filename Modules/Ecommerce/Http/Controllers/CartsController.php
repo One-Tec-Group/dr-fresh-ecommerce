@@ -110,5 +110,35 @@ class CartsController extends Controller
     }
 
 
+    public function decrease($id, $quantity)
+    {
+
+        if (Auth::guard('customer')->check()) {
+            \Cart::session(Auth::guard('customer')->id());
+        }
+
+
+        $product = Product::where('business_id', config('constants.business_id'))->where('id', $id)->with('variation_location_details')->first();
+        $check_cart = \Cart::get($id);
+
+
+        $price = (double)$product->variations->first()->default_sell_price;
+
+
+        if ($check_cart) {
+
+
+                $this->update(
+                    $id,
+                    - $quantity,
+                    $price
+                );
+
+        }
+
+
+
+        return response()->json(true, Response::HTTP_CREATED);
+    }
     
 }

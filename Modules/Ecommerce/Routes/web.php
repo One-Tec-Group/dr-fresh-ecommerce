@@ -36,6 +36,7 @@ Route::prefix('ecommerce')->group(function() {
 
     //Cart
     Route::get('cart/add/{id}/{quantity}','CartsController@add')->name('cart.add');
+    Route::get('cart/decrease/{id}/{quantity}','CartsController@decrease')->name('cart.decrease');
     Route::get('cart/remove/{id}','CartsController@remove')->name('cart.remove');
     Route::get('checkout','CartsController@checkout')->name('cart.checkout');
     Route::post('checkout/store','CheckoutController@checkoutStore')->name('cart.checkoutStore');

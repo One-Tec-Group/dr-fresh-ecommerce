@@ -12,6 +12,34 @@ function addToCart(id) {
     });
 }
 
+function increase(id) {
+    var quantity = 1;
+    var url = websiteUrl + '/cart/add';
+    url += '/' + id + '/' + quantity;
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            window.livewire.emit('added_product_to_cart');
+        }
+    });
+}
+function decrease(id) {
+    var quantity = 1;
+    var url = websiteUrl + '/cart/decrease';
+    url += '/' + id + '/' + quantity;
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (data) {
+            window.livewire.emit('added_product_to_cart');
+        }
+    });
+}
+
 function removeFromCart(id) {
     var url = websiteUrl + '/cart/remove';
     url += '/' + id;
@@ -42,20 +70,5 @@ var value = parseInt(input.val());
     }
 }
 
-// $('.increase').click(function () {
-//     var inputId = $(this).attr('input');
-//
-//     var value = Number($('#input_' + inputId).val()) + 1;
-//     $('#input_' + inputId).val(value);
-// });
-//
-// $('.decrease').click(function () {
-//     var inputId = $(this).attr('input');
-//     var value = Number($('#input_' + inputId).val()) - 1;
-//     if (value >= 1) {
-//         $('#input_' + inputId).val(value);
-//
-//     }
-// });
 
 

@@ -15,8 +15,8 @@ class Cartdiv extends Component
     public $total_quantity = 0;
 
     protected $listeners = [
-        'added_product_to_cart',
-        'deleted_product_from_cart'
+        'added_product_to_cart' => 'render',
+        'deleted_product_from_cart' => 'render',
     ];
 
 
@@ -37,15 +37,6 @@ class Cartdiv extends Component
     }
 
 
-    public function added_product_to_cart()
-    {
-        $this->render();
-    }
-
-    public function deleted_product_from_cart()
-    {
-        $this->render();
-    }
 
     public function increase($id)
     {

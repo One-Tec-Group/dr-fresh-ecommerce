@@ -2,10 +2,11 @@
 
     <div class="cart-sidebar-header">
         <h5>
-            @lang('ecommerce::locale.my_cart') <span class="text-success">({{$count}})</span> <a id="offcanvas"
-                                                                                                 data-toggle="offcanvas"
-                                                                                                 class="float-right"
-                                                                                                 href="#"><i
+            @lang('ecommerce::locale.my_cart') <span class="text-success">({{$count}})</span>
+            <a id="offcanvas"
+               data-toggle="offcanvas"
+               class="float-right"
+               href="#"><i
                         class="mdi mdi-close"></i>
             </a>
         </h5>
@@ -22,14 +23,14 @@
 
                         <!-- <a class="float-right remove-cart" onclick="removeFromCart({{$cart_item->id}})" href="#"><i
                                     class="mdi mdi-close md-24"></i></a> -->
-                        @if($cart_item->image != null )
+                            @if($cart_item->image != null )
 
                                 <img class="img-fluid" src="{{env('POS_URL') . "uploads/img/".$cart_item->image}}"
-                                alt="{{$cart_item->name ?? ''}}">
-                        @else
-                            <img class="img-fluid" src="{{asset('frontend/images/placeholder.png')}}"
-                                alt="{{$cart_item->name ?? ''}}">
-                        @endif
+                                     alt="{{$cart_item->name ?? ''}}">
+                            @else
+                                <img class="img-fluid" src="{{asset('frontend/images/placeholder.png')}}"
+                                     alt="{{$cart_item->name ?? ''}}">
+                            @endif
                         </div>
                         <div>
 
@@ -39,10 +40,14 @@
                                 </strong> {{ $cart_item->unit->actual_name }}</h6>
                             <p class="offer-price mb-0"> {{(double)$cart_item->variations->first()->default_sell_price ?? ''}} @lang('ecommerce::locale.pound') </p>
                             <div class="d-flex">
-                                <button class="btn btn-theme-round btn-number" type="button" wire:click="decrease({{$cart_item->id}})">-</button>
+                                <button class="btn btn-theme-round btn-number" type="button"
+                                        onclick="decrease({{$cart_item->id}})">-
+                                </button>
 
-                                    <p class="offer-price m-2 mb-0"> {{$item['quantity']}} </p>
-                                <button class="btn btn-theme-round btn-number" type="button" wire:click="increase({{$cart_item->id}})">+</button>
+                                <p class="offer-price m-2 mb-0"> {{$item['quantity']}} </p>
+                                <button class="btn btn-theme-round btn-number" type="button"
+                                        onclick="increase({{$cart_item->id}})">+
+                                </button>
                             </div>
                         </div>
 
@@ -61,7 +66,8 @@
     <div class="cart-sidebar-footer">
         <div class="cart-store-details">
             <p>@lang('ecommerce::locale.subtotal') <strong
-                        class="float-right cart_total_price"> {{$subtotal}}  @lang('ecommerce::locale.pound') </strong></p>
+                        class="float-right cart_total_price"> {{$subtotal}}  @lang('ecommerce::locale.pound') </strong>
+            </p>
             {{--<p>Delivery Charges <strong class="float-right text-danger">+ $29.69</strong></p>--}}
             {{--<h6>Your total savings <strong class="float-right text-danger">$55 (42.31%)</strong></h6>--}}
         </div>
