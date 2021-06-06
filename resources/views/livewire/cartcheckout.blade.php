@@ -35,12 +35,7 @@
             </div>
         </div>
         <div class="cart-store-details">
-            <!-- <div>
-                <p>@lang('ecommerce::locale.subtotal') <strong
-                        class="float-right cart_total_price"> {{$subtotal}} </strong> <strong>@lang('ecommerce::locale.pound') </strong></p>
-                {{--<p>Delivery Charges <strong class="float-right text-danger">+ $29.69</strong></p>--}}
-                {{--<h6>Your total savings <strong class="float-right text-danger">$55 (42.31%)</strong></h6>--}}
-            </div> -->
+
             <div class="d-flex justify-content-between">
                 <div>@lang('ecommerce::locale.subtotal') </div>
                 <div><strong id="subtotal">{{$subtotal}}</strong><strong>جنيه</strong></div>
@@ -52,6 +47,37 @@
             <div class="d-flex justify-content-between">
                 <div>الإجمالي</div>
                 <div><strong id="total-cost">{{$total_with_delivery}}</strong><strong>جنيه</strong></div>
+            </div>
+        </div>
+
+        <div class="card checkout-step-one">
+
+            <div>
+                <div class="card-body">
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <label
+                                    class="sr-only">@lang('ecommerce::locale.coupon')</label>
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><span
+                                                class="mdi mdi-ticket"></span></div>
+                                </div>
+                                <input type="text" name="coupon" class="form-control" id="coupon"
+                                       placeholder="@lang('ecommerce::locale.enter_coupon')"
+                                       >
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" data-toggle="collapse"
+                                    data-target="#collapseTwo" aria-expanded="false"
+                                    aria-controls="collapseTwo"
+                                    class="btn btn-secondary mb-2 btn-lg" onclick="addCoupon()">@lang('ecommerce::locale.submit_coupon')
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
@@ -76,5 +102,20 @@
         }
 
         window.livewire.emit('delivery_cost',inputPrice);
+    }
+
+    function addCoupon(){
+        var coupon = $('#coupon').val();
+        var url = @json(route('ecommerce.coupon'));
+        $.ajax({
+            url: url,
+            type:"GET",
+            data:{
+                coupon:coupon,
+            },
+            success:function(response){
+                window.livewire.emit('add_coupon');
+            },
+        });
     }
 </script>
