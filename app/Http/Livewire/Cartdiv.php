@@ -54,12 +54,20 @@ class Cartdiv extends Component
             \Cart::session(Auth::guard('customer')->id());
         }
 
+        $type = null;
+
         $product = Product::where('business_id', config('constants.business_id'))->where('id', $id)->with('variation_location_details')->first();
         $check_cart = \Cart::get($id);
 
+        if ($check_cart['attributes']['offer_id'] !== null) {
+            $type = 'offer';
+        } else {
+            $type = 'product';
+        }
 
+            // $price = (double)$product->variations->first()->default_sell_price;
+            $price = (double)$check_cart->price;
 
-            $price = (double)$product->variations->first()->default_sell_price;
 
         if ($this->check_quantity($product, $check_cart->quantity + 1)) {
 
@@ -86,7 +94,9 @@ class Cartdiv extends Component
 
 
 
-            $price = (double)$product->variations->first()->default_sell_price;
+            // $price = (double)$product->variations->first()->default_sell_price;
+            $price = (double)$check_cart->price;
+
 
         if ($check_cart->quantity > 1) {
 
@@ -117,20 +127,25 @@ class Cartdiv extends Component
     }
 
 
-    public function check_quantity($product, $quantity)
+    
+    public function check_quantity($product, $quantity, $type = null)
     {
-        if ($product->enable_stock == 1) {
-            if ($product->variation_location_details->qty_available >= $quantity) {
-                return true;
+        if ($type === 'product') {
+            if ($product->enable_stock == 1) {
+                if ($product->variation_location_details->qty_available >= $quantity) {
+                    return true;
+                } else {
+                    return false;
+                }
+    
             } else {
-                return false;
+                return true;
             }
-
         } else {
             return true;
         }
+        
     }
-
 
     public function remove($id)
     {

@@ -12,6 +12,21 @@ function addToCart(id) {
     });
 }
 
+function addOfferToCart(offerId) {
+    var quantity = $('#offer_input_' + offerId).val();
+    console.log(offerId);
+    var url = websiteUrl + '/cart/addOffer';
+    url += '/' + offerId + '/' + quantity;
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (data) {
+            window.livewire.emit('added_product_to_cart');
+        }
+    });
+}
+
 function removeFromCart(id) {
     var url = websiteUrl + '/cart/remove';
     url += '/' + id;

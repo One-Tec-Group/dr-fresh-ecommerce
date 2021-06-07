@@ -48,5 +48,6 @@ return [
     'order_terms'       => 'شكراً لاختيارك لنا',
     'back_to_shopping'       => 'الرجوع للتسوق',
     'orderdetails'       => 'تفاصيل الطلب',
+    'offer_product_count' => 'العرض يحتوي علي عدد',
 
 ];

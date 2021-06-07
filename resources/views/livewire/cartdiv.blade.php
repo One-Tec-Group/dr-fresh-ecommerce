@@ -13,7 +13,9 @@
     <div class="cart-sidebar-body">
         @forelse($cart_items as $item)
             @php
-                $cart_item = \App\Product::find($item['id']);
+                // $cart_item = \App\Product::find($item['id']);
+                $cart_item = $item['attributes']['offer_id'] === null ? \App\Product::find($item['id']) : \Modules\Ecommerce\Entities\Offer::find($item['attributes']['offer_id']);
+
             @endphp
             <div class="cart-list-product">
                 <div class="d-flex justify-content-between">
@@ -26,6 +28,7 @@
 
                                 <img class="img-fluid" src="{{env('POS_URL') . "uploads/img/".$cart_item->image}}"
                                 alt="{{$cart_item->name ?? ''}}">
+                                
                         @else
                             <img class="img-fluid" src="{{asset('frontend/images/placeholder.png')}}"
                                 alt="{{$cart_item->name ?? ''}}">
@@ -36,8 +39,9 @@
                             {{--<span class="badge badge-success">50% OFF</span>--}}
                             <h5>{{$cart_item->name ?? ''}}</h5>
                             <h6><strong><span class="mdi mdi-approval"></span> @lang('ecommerce::locale.available_in')
-                                </strong> {{ $cart_item->unit->actual_name }}</h6>
-                            <p class="offer-price mb-0"> {{(double)$cart_item->variations->first()->default_sell_price ?? ''}} @lang('ecommerce::locale.pound') </p>
+                                </strong> {{ $cart_item->unit ? $cart_item->unit->actual_name : $cart_item->name }}</h6>
+                            <p class="offer-price mb-0"> {{(double)$item['attributes']['offer_id'] === null ? $cart_item->variations->first()->default_sell_price : \Cart::get($cart_item->id)->getPriceSum()}} @lang('ecommerce::locale.pound') </p>
+                            {{-- <p class="offer-price mb-0"> {{$cart_item>}} @lang('ecommerce::locale.pound') </p> --}}
                             <div class="d-flex">
                                 <button class="btn btn-theme-round btn-number" type="button" wire:click="decrease({{$cart_item->id}})">-</button>
 

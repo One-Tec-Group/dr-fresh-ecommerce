@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Ecommerce\Entities\Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $whatsapp_setting = Setting::where('key', 'whats_app')->first()->value;
+        view()->composer('ecommerce::frontend.layouts.master', function ($view) use($whatsapp_setting) {
+            $view->with('whatsapp', $whatsapp_setting);
+        });
     }
 }

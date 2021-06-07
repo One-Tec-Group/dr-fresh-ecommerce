@@ -4,10 +4,12 @@ namespace Modules\Ecommerce\Http\Controllers;
 
 use App\Product;
 use App\DeliveryGroups;
+use Darryldecode\Cart\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Modules\Ecommerce\Entities\Offer;
 
 class CartsController extends Controller
 {
@@ -26,8 +28,8 @@ class CartsController extends Controller
         $check_cart = \Cart::get($id);
 
 
-            $price = (double)$product->variations->first()->default_sell_price;
-            $wighted = false;
+        $price = (double)$product->variations->first()->default_sell_price;
+        $wighted = false;
 
 
         if ($check_cart) {
@@ -49,12 +51,64 @@ class CartsController extends Controller
                     'name' => $product->name,
                     'price' => $price,
                     'quantity' => $quantity,
-                    'attributes' => array('weighted' => $wighted),
+                    'attributes' => array('weighted' => $wighted, 'offer_id' => null),
                     'associatedModel' => $product
                 ));
             }
 
         }
+
+
+
+        return response()->json(true, Response::HTTP_CREATED);
+    }
+
+    public function addOffer($id, $quantity)
+    {
+
+
+        if (Auth::guard('customer')->check()) {
+            \Cart::session(Auth::guard('customer')->id());
+        }
+
+
+        $offer = Offer::where('business_id', config('constants.business_id'))->where('id', $id)->with('product')->first();
+        // $check_cart = \Cart::get($id);
+
+        $price = (double)$offer->product->variations->first()->default_sell_price;
+        $wighted = false;
+
+        // if ($check_cart) {
+        //     if ($this->check_quantity($product, $check_cart->quantity + $quantity)) {
+
+        //         $this->update(
+        //             $id,
+        //             $quantity,
+        //             $price
+        //         );
+        //     }
+
+        // } else {
+
+            // (double)$offer->product->variations->first()->default_sell_price * $offer->quantity) - ($offer->price_persent/100)
+
+                // add the product to cart
+                \Cart::add(array(
+                    'id' => $offer->id,
+                    'name' => $offer->name,
+                    'price' => ((double)$offer->product->variations->first()->default_sell_price * $offer->quantity) - ($offer->price_persent/100),
+                    'quantity' => $quantity,
+                    'attributes' => array('weighted' => $wighted),
+                    'associatedModel' => $offer,
+                    'attributes' => [
+                        'offer_id' => $offer->id
+                    ]
+                ));
+
+                // dd(\Cart::get($offer->id));
+            
+
+        // }
 
 
 
