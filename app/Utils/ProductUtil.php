@@ -390,6 +390,7 @@ class ProductUtil extends Util
      */
     public function decreaseProductQuantity($product_id, $variation_id, $location_id, $new_quantity, $old_quantity = 0)
     {
+//        dd($variation_id);
         $qty_difference = $new_quantity - $old_quantity;
 
         $product = Product::find($product_id);
@@ -405,6 +406,7 @@ class ProductUtil extends Util
             //If location details not exists create new one
             if (empty($details)) {
                 $variation = Variation::find($variation_id);
+                dd($variation);
                 $details = VariationLocationDetails::create([
                             'product_id' => $product_id,
                             'location_id' => $location_id,

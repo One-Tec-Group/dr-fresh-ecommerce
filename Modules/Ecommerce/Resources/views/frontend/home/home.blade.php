@@ -107,7 +107,9 @@
         </div>
     </section>
 
-    @include("ecommerce::frontend.home.offers")
+    @if($offers->count() > 0)
+        @include("ecommerce::frontend.home.offers")
+    @endif
     
     @forelse($categories as $category)
         <section class="product-items-slider section-padding">

@@ -230,7 +230,7 @@ class CheckoutController extends Controller
             "floor" => 'nullable',
             "apartment_number" => 'nullable',
             "special_marque" => 'nullable|max:255',
-            'coupon_discount' => 'required|number',
+            'coupon_discount' => 'required|string',
         ]);
 
 
@@ -306,21 +306,33 @@ class CheckoutController extends Controller
 
 
                 foreach ($productlist as $product) {
+
+                    $offer_unit_price = null;
+                    $offer_quantity = null;
+
+                    if($product->attributes->offer_id){
+                        $offer_unit_price = $product->associatedModel->quantity ? ($product->price/$product->quantity)/$product->associatedModel->quantity : ($product->price/$product->quantity);
+                        $offer_quantity = $product->quantity * $product->associatedModel->quantity;
+                        $variation_id = $product->associatedModel->product->variations->first()->id;
+                    }else{
+
+                        $variation_id = $product->associatedModel->variations->first()->id;
+                    }
                     array_push($input['products'], array(
                         "product_type" => $product->associatedModel['type'],
                         "product_id" => $product->associatedModel['id'],
-                        "variation_id" => "495",
+                        "variation_id" => $variation_id,
                         "enable_stock" => $product->associatedModel['enable_stock'],
                         "product_unit_id" => $product->associatedModel['unit_id'],//unit_id
                         "base_unit_multiplier" => "1",//quantity
-                        "unit_price" => $product->price,
+                        "unit_price" => $offer_unit_price ?? $product->price,
                         "line_discount_type" => "fixed",
                         "line_discount_amount" => "0.00",
                         "item_tax" => "0.00",
                         "tax_id" => null,
                         "sell_line_note" => null,
-                        "unit_price_inc_tax" => $product->price,
-                        "quantity" => $product->quantity,
+                        "unit_price_inc_tax" => $offer_unit_price ?? $product->price,
+                        "quantity" => $offer_quantity ?? $product->quantity ,
                     ));
                 }
             }

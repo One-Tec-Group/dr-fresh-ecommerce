@@ -22,13 +22,9 @@
                         {{--<span class="badge badge-success">50% OFF</span>--}}
                         <h5><a href="#">{{$cart_item->name ?? ''}}</a></h5>
                         <h6><strong><span class="mdi mdi-approval"></span> @lang('ecommerce::locale.available_in')
-                            </strong> {{ $cart_item->unit->actual_name ?? '' }}</h6>
-                        @if(!$item['attributes']['weighted'])
-                            <p class="offer-price m-2 mb-0"> {{$item['quantity']}} </p>
-                        @else
-                            <p class="offer-price m-2 mb-0"> {{$item['quantity'] / 2}} </p>
+                        </strong> {{ $cart_item->unit->actual_name ?? '' }}</h6>
+                        <p class="offer-price m-2 mb-0"> {{$item['quantity']}} </p>
 
-                        @endif
                     </div>
                 @empty
                 @endforelse
