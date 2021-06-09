@@ -18,5 +18,7 @@ return [
     'search_products'       => 'بحث عن المنتجات',
     'orderdetails'       => 'تفاصيل الطلب',
     'Get_In_Touch'=>'ابقى على تواصل',
+    'no_coupon_match'       => 'هذا الكوبون غير صالح',
+    'no_user_login'       => 'يجب تسجيل الدخول اولا ',
 
 ];

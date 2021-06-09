@@ -58,6 +58,7 @@
                         <div class="accordion" id="accordionExample">
                             <form action="{{ route('cart.checkoutStore') }}" method="post">
                                 @csrf
+                                <input type="hidden" name="coupon_discount" id="coupon_discount_store" value="0"/>
                                 <div class="card checkout-step-one">
                                     <div class="card-header" id="headingOne">
                                         <h5 class="mb-0">
