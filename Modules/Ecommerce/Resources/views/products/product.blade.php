@@ -40,12 +40,17 @@
                         </div>
                     </div>
                 </div>
+                @php
+                    $cart_controller = new \Modules\Ecommerce\Http\Controllers\CartsController();
+                    $data_with_discount = $cart_controller->set_discount($product,$product->variations->first()->default_sell_price,true);
+                @endphp
                 <div class="col-md-6">
                     <div class="shop-detail-right">
 
-                        <span class="badge badge-success">10% خصم</span>
+                        <span class="badge badge-success">{{$data_with_discount['discount_value']}}{{$data_with_discount['discount_type'] == 'percentage'? '%': __('ecommerce::locale.pound')}} خصم</span>
 
-                        @if($product->variation_location_details && $product->variation_location_details->qty_available > 0)
+
+                    @if($product->variation_location_details && $product->variation_location_details->qty_available > 0)
                             <p class="float-right"><span class="badge badge-success">متاح</span></p>
                         @else
                             <p class="float-right"><span class="badge " style="border: 1px solid #dc3545 !important; color: #dc3545 !important;">غير متاح</span></p>
@@ -54,11 +59,17 @@
                         <h2>{{$product->name ?? ''}}</h2>
                         <h6><strong><span class="mdi mdi-approval"></span> @lang('ecommerce::locale.available_in')
                             </strong> {{ $product->unit->actual_name }}</h6>
-                        <p class="regular-price"><i class="mdi mdi-tag-outline"></i>{{(double)$product->variations->first()->default_sell_price + ((double)$product->variations->first()->default_sell_price / 10) ?? ''}} @lang('ecommerce::locale.pound')</p>
+                        {{--<p class="regular-price"><i class="mdi mdi-tag-outline"></i>{{(double)$product->variations->first()->default_sell_price + ((double)$product->variations->first()->default_sell_price / 10) ?? ''}} @lang('ecommerce::locale.pound')</p>--}}
 
-                        <p class="offer-price mb-0"><span
-                                class="text-success">{{(double)$product->variations->first()->default_sell_price ?? ''}} @lang('ecommerce::locale.pound') </span>
-                        </p>
+                        {{--<p class="offer-price mb-0"><span--}}
+                                {{--class="text-success">{{(double)$product->variations->first()->default_sell_price ?? ''}} @lang('ecommerce::locale.pound') </span>--}}
+                        {{--</p>--}}
+                        <h6 class="offer-price mb-0">
+                            {{ $data_with_discount['price_after_discount'] ??  (double)$product->variations->first()->default_sell_price ?? ''}} @lang('ecommerce::locale.pound')
+                        </h6>
+                        <p class="regular-price"><i class="mdi mdi-tag-outline"></i>
+                            {{ $data_with_discount['price_after_discount'] & $data_with_discount['price_after_discount'] < (double)$product->variations->first()->default_sell_price ? (double)$product->variations->first()->default_sell_price : ''}}
+                            @lang('ecommerce::locale.pound')</p>
                         <a href="#" onclick="addToCart({{$product->id}})">
                             <button type="button" class="btn btn-secondary btn-lg" @if(!($product->variation_location_details && $product->variation_location_details->qty_available > 0)) disabled @endif><i
                                     class="mdi mdi-cart-outline"></i>@lang('ecommerce::locale.add_to_cart')</button>
@@ -117,11 +128,15 @@
             <div class="owl-carousel owl-carousel-featured">
                 @forelse($products_like as $product)
 
+                    @php
+                        $cart_controller = new \Modules\Ecommerce\Http\Controllers\CartsController();
+                        $data_with_discount = $cart_controller->set_discount($product,$product->variations->first()->default_sell_price,true);
+                    @endphp
                     <div class="item">
                         <div class="product">
                             <a href="{{url('ecommerce/product',$product->id)}}">
                                 <div class="product-header">
-                                    <span class="badge badge-success">10% خصم</span>
+                                    <span class="badge badge-success">{{$data_with_discount['discount_value']}}{{$data_with_discount['discount_type'] == 'percentage'? '%': __('ecommerce::locale.pound')}} خصم</span>
 
                                     @if($product->image != null)
 
@@ -148,9 +163,15 @@
                                                 class="mdi mdi-approval"></span> @lang('ecommerce::locale.available_in')
                                         </strong> {{ $product->unit->actual_name }}</h6>
 
-                                    <h6 class="offer-price mb-0">{{(double)$product->variations->first()->default_sell_price ?? ''}} @lang('ecommerce::locale.pound') </h6>
-                                    <p class="regular-price"><i class="mdi mdi-tag-outline"></i>{{(double)$product->variations->first()->default_sell_price + ((double)$product->variations->first()->default_sell_price / 10) ?? ''}} @lang('ecommerce::locale.pound')</p>
+                                    {{--<h6 class="offer-price mb-0">{{(double)$product->variations->first()->default_sell_price ?? ''}} @lang('ecommerce::locale.pound') </h6>--}}
+                                    {{--<p class="regular-price"><i class="mdi mdi-tag-outline"></i>{{(double)$product->variations->first()->default_sell_price + ((double)$product->variations->first()->default_sell_price / 10) ?? ''}} @lang('ecommerce::locale.pound')</p>--}}
 
+                                    <h6 class="offer-price mb-0">
+                                        {{ $data_with_discount['price_after_discount'] ??  (double)$product->variations->first()->default_sell_price ?? ''}} @lang('ecommerce::locale.pound')
+                                    </h6>
+                                    <p class="regular-price"><i class="mdi mdi-tag-outline"></i>
+                                        {{ $data_with_discount['price_after_discount'] & $data_with_discount['price_after_discount'] < (double)$product->variations->first()->default_sell_price ? (double)$product->variations->first()->default_sell_price : ''}}
+                                        @lang('ecommerce::locale.pound')</p>
                                 </div>
                             </a>
 

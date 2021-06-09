@@ -24,7 +24,7 @@ class EcommerceController extends Controller
         $sliders = Slider::where('status', 'active')->get();
         $settings = Setting::all();
         $todayDate = date('Y-m-d');
-        $offers = Offer::validOffers($todayDate);
+        $offers = Offer::where('business_id', config('constants.business_id'))->validOffers($todayDate);
         // dd($offers->count());
         $categories = Category::where('business_id', config('constants.business_id'))->with('products')->get();
         $products = Product::where('business_id', config('constants.business_id'))->take(16)->get();

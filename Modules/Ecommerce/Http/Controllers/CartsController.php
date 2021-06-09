@@ -167,7 +167,7 @@ class CartsController extends Controller
         return view('ecommerce::frontend.checkout.checkout', compact('addresses','current_address'));
     }
 
-    public function set_discount($product ,$price)
+    public function set_discount($product, $price, $with_type=null)
     {
         $discount = Discount::with('variations')->where('business_id', config('constants.business_id'))
             ->where('is_active', 1)->where('starts_at', '<=', Carbon::now())
@@ -179,7 +179,9 @@ class CartsController extends Controller
             ->orderBy('priority', 'desc')
             ->first();
 
-        $price_after_discount =null;
+        $price_after_discount = null;
+        $discount_value = null;
+        $discount_type = null;
         if (!$discount->category_id){
             foreach ($discount->variations as $variation){
                 if ($variation->product_id == $product->id){
@@ -187,10 +189,14 @@ class CartsController extends Controller
                         //percentage
                         $dis = $price * $discount->discount_amount/100;
                         $price_after_discount = $price - $dis;
+                        $discount_value = $discount->discount_amount;
+                        $discount_type = 'percentage';
 
                     }else{
                         //fixed
                         $price_after_discount = $price - $discount->discount_amount;
+                        $discount_value = $discount->discount_amount;
+                        $discount_type = 'fixed';
                     }
                     $price_after_discount = $price_after_discount < 0 ? 0 : $price_after_discount;
                     break;
@@ -202,14 +208,26 @@ class CartsController extends Controller
                 //percentage
                 $dis = $price * $discount->discount_amount/100;
                 $price_after_discount = $price - $dis;
+                $discount_value = $discount->discount_amount;
+                $discount_type = 'percentage';
 
             }else{
                 //fixed
                 $price_after_discount = $price - $discount->discount_amount;
+                $discount_value = $discount->discount_amount;
+                $discount_type = 'fixed';
             }
             $price_after_discount = $price_after_discount < 0 ? 0 : $price_after_discount;
         }
 
+        if ($with_type){
+            $data =[];
+            $data['discount_value'] = (double)$discount_value;
+            $data['discount_type'] = $discount_type;
+            $data['price_after_discount'] = $price_after_discount;
+
+            return $data;
+        }
         return $price_after_discount;
     }
 
