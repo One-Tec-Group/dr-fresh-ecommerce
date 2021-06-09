@@ -2,6 +2,7 @@
 
 namespace Modules\Ecommerce\Http\Controllers;
 
+use App\Coupon;
 use App\User;
 use App\Media;
 use App\Brands;
@@ -219,6 +220,7 @@ class CheckoutController extends Controller
     public function checkoutStore(Request $request)
     {
 
+//        dd($request->all());
         $validator = Validator::make($request->all(), [
             "phone" => 'required',
             'delivery_id' => 'required|exists:delivery_groups,id',
@@ -228,6 +230,7 @@ class CheckoutController extends Controller
             "floor" => 'nullable',
             "apartment_number" => 'nullable',
             "special_marque" => 'nullable|max:255',
+            'coupon_discount' => 'required|number',
         ]);
 
 
@@ -257,18 +260,7 @@ class CheckoutController extends Controller
             $input = $request->except('_token');
             // $input['products'] = \Cart::getContent();
             $input['status'] = 'final';
-            if(\Cart::getTotal() >= 1000){
-                $input['final_total'] = (\Cart::getTotal() - 100) + ($delivery_address->price ?? 0);
-            }
-            elseif(\Cart::getTotal() >= 600){
-                $input['final_total'] = (\Cart::getTotal() - 50) + ($delivery_address->price ?? 0);
-            }
-            elseif(\Cart::getTotal() >= 300){
-                $input['final_total'] = (\Cart::getTotal() - 20) + ($delivery_address->price ?? 0);
-            }
-            else{
-                $input['final_total'] = \Cart::getTotal()  + ($delivery_address->price ?? 0);
-            }
+            $input['final_total'] = \Cart::getTotal()  + ($delivery_address->price ?? 0) - $request->coupon_discount ?? 0;
             $input['discount_type'] = 'percentage';
             $input['discount_amount'] = '0.00';
             $input['change_return'] = '0.00';
@@ -648,7 +640,51 @@ class CheckoutController extends Controller
 
     public function add_coupon(Request $request)
     {
-        dd($request->all());
+
+        if (!Auth::guard('customer')->check()){
+            return response()->json([
+                    'message' => __('ecommerce::locale.no_user_login'),
+                    'alert-type' => 'error',
+                ],401
+            );
+        }
+        $user = Auth::guard('customer')->user();
+        $coupon = Coupon::where('business_id', config('constants.business_id'))
+            ->where('is_active','on')
+            ->where('start_date', '<=', Carbon::now())->where('end_date', '>=', Carbon::now())
+            ->where('requiring_user','>', 0)->where('requiring_all','>', 0)
+            ->where('coupon_num',$request->coupon)
+            ->first();
+
+        if (!$coupon)
+        {
+            return response()->json([
+                'message' => __('ecommerce::locale.no_coupon_match'),
+                    'alert-type' => 'error',
+                    ],301
+               );
+        }
+
+        if ($user->coupons){
+
+            foreach($user->coupons as $user_coupon){
+                if ($user_coupon->id == $coupon->id){
+                    if ($user_coupon->used < $coupon->requiring_user){
+                        $coupon_discount = $coupon->price;
+                    }
+                }
+            }
+        }else{
+            $coupon_discount = $coupon->price;
+        }
+
+        $total_amount  = \Cart::getTotal()  - $coupon_discount ?? 0;
+
+        return response()->json([
+                'coupon_discount' => $coupon_discount ?? 0,
+                'alert-type' => 'success',
+            ]
+        );
 
     }
 }

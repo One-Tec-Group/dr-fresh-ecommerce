@@ -51,5 +51,7 @@ return [
     'coupon'       => 'كوبون',
     'enter_coupon'       => 'ادخل الكوبون',
     'submit_coupon'       => 'أضف الكوبون',
+    'no_coupon_match'       => 'هذا الكوبون غير صالح',
+    'no_user_login'       => 'يجب تسجيل الدخول اولا ',
 
 ];

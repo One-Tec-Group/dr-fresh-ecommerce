@@ -44,6 +44,10 @@
                 <div>خدمة التوصيل</div>
                 <div><strong id="delivery-cost">{{$delivery_cost}}</strong><strong>جنيه</strong></div>
             </div>
+            <div class="d-flex justify-content-between" id="coupon_div" style="display:none !important;">
+                <div>كوبون خصم(<span id="coupon_num"> </span>) </div>
+                <div><strong id="coupon_discount"></strong><strong>جنيه</strong></div>
+            </div>
             <div class="d-flex justify-content-between">
                 <div>الإجمالي</div>
                 <div><strong id="total-cost">{{$total_with_delivery}}</strong><strong>جنيه</strong></div>
@@ -66,6 +70,9 @@
                                 <input type="text" name="coupon" class="form-control" id="coupon"
                                        placeholder="@lang('ecommerce::locale.enter_coupon')"
                                        >
+                            </div>
+                            <div id="coupon_error" style="display:none; color: red">
+
                             </div>
                         </div>
                         <div class="col-auto">
@@ -91,9 +98,8 @@
         document.getElementById('delivery-cost').innerText = inputPrice;
 
         var totalWithDelivery =  (+document.getElementById('subtotal').innerText)+ (+inputPrice);
-
+        totalWithDelivery = totalWithDelivery - document.getElementById('coupon_discount_store').value;
         document.getElementById('total-cost').innerText = totalWithDelivery;
-
 
         if(inputValue !== 'default') {
             document.getElementById('checkout-submit-btn').disabled = false;
@@ -107,6 +113,23 @@
     function addCoupon(){
         var coupon = $('#coupon').val();
         var url = @json(route('ecommerce.coupon'));
+
+        var coupon_error = document.getElementById('coupon_error');
+        var coupon_div = document.getElementById('coupon_div');
+
+
+
+        var coupon_discount_store = document.getElementById('coupon_discount_store');
+
+        var inputValue = document.getElementById('delivery_id').value;
+        var inputPrice = $(`#address_${inputValue}`).attr('price');
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
         $.ajax({
             url: url,
             type:"POST",
@@ -114,8 +137,39 @@
                 coupon:coupon,
             },
             success:function(response){
+
+                var coupon_discount = document.getElementById('coupon_discount');
+                var coupon_num = document.getElementById('coupon_num');
+                if (response.coupon_discount) {
+                    if (coupon_error.style.display == 'block'){
+
+                         coupon_error.style.display  = 'none';
+                    }
+
+                    coupon_div.style.display    = 'block';
+                    coupon_discount.innerHTML   = response.coupon_discount;
+                    coupon_num.innerHTML        = coupon;
+
+                    var totalWithcoupon =  (+document.getElementById('subtotal').innerText)+ (+inputPrice) + (-response.coupon_discount);
+                    document.getElementById('total-cost').innerText = totalWithcoupon;
+                    coupon_discount_store.value = response.coupon_discount;
+                }
+
                 window.livewire.emit('add_coupon');
             },
+            error: function(xhr, status, error){
+
+                coupon_error.innerHTML      = xhr.responseJSON.message;
+                if (coupon_div.style.display == 'block'){
+
+                    $('#coupon_div').attr("style", "display: none !important");
+                    var totalWithcoupon =  (+document.getElementById('subtotal').innerText) + (+inputPrice);
+                    document.getElementById('total-cost').innerText = totalWithcoupon;
+                    coupon_discount_store.value = 0;
+                }
+                coupon_error.style.display    = 'block';
+
+            }
         });
     }
 </script>
