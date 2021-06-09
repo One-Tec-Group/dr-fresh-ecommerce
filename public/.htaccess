@@ -1,10 +1,7 @@
 
-<<<<<<< HEAD
-=======
 #RewriteEngine On
 #RewriteCond %{HTTPS} !=on
 #RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
->>>>>>> 7f96930a92b023ebf62df0790e739c7017724b30
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
