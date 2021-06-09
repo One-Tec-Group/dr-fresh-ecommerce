@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Modules\Ecommerce\Http\Controllers\CartsController;
 
 class ModalCart extends Component
@@ -17,7 +18,9 @@ class ModalCart extends Component
 
     protected $listeners = [
         'added_product_to_cart',
-        'deleted_product_from_cart'
+        'deleted_product_from_cart',
+        'increase_product',
+        'decrease_product'
     ];
 
 
@@ -43,6 +46,16 @@ class ModalCart extends Component
     }
 
     public function deleted_product_from_cart()
+    {
+        $this->render();
+    }
+
+    public function increase_product()
+    {
+        $this->render();
+    }
+
+    public function decrease_product()
     {
         $this->render();
     }
@@ -93,9 +106,10 @@ class ModalCart extends Component
         $check_cart = \Cart::get($id);
 
 
+        dd($check_cart);
 
-            // $price = (double)$product->variations->first()->default_sell_price;
-            $price = (double)$check_cart->price;
+        // $price = (double)$product->variations->first()->default_sell_price;
+        $price = (double)$check_cart->price;
 
 
         if ($check_cart->quantity > 1) {
@@ -110,6 +124,9 @@ class ModalCart extends Component
             $this->remove($id);
         }
 
+        if ($check_cart == null) {
+            Session::put('coupon_discount', 0);
+        }
         $this->emit('decrease_product');
 
         $this->render();

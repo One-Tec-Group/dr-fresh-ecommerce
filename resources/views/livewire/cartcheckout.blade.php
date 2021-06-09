@@ -40,9 +40,9 @@
                 <div>خدمة التوصيل</div>
                 <div><strong id="delivery-cost">{{$delivery_cost}}</strong><strong>جنيه</strong></div>
             </div>
-            <div class="d-flex justify-content-between" id="coupon_div" style="display:none !important;">
+            <div class="d-flex justify-content-between" id="coupon_div">
                 <div>كوبون خصم(<span id="coupon_num"> </span>) </div>
-                <div><strong id="coupon_discount"></strong><strong>جنيه</strong></div>
+                <div><strong id="coupon_discount">{{$coupon_discount}}</strong><strong>جنيه</strong></div>
             </div>
             <div class="d-flex justify-content-between">
                 <div>الإجمالي</div>
@@ -146,7 +146,7 @@
                     coupon_discount.innerHTML   = response.coupon_discount;
                     coupon_num.innerHTML        = coupon;
 
-                    var totalWithcoupon =  (+document.getElementById('subtotal').innerText)+ (+inputPrice) + (-response.coupon_discount);
+                    var totalWithcoupon =  parseFloat((+document.getElementById('subtotal').innerText)+ (+inputPrice) + (-response.coupon_discount)).toFixed(2);
                     document.getElementById('total-cost').innerText = totalWithcoupon;
                     coupon_discount_store.value = response.coupon_discount;
                 }

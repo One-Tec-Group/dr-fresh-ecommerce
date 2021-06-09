@@ -35,6 +35,7 @@ use App\TransactionSellLine;
 use Illuminate\Http\Request;
 use App\Utils\TransactionUtil;
 use App\DeliveryBoyTransaction;
+use App\Http\Livewire\Cartcheckout;
 use App\Utils\CashRegisterUtil;
 use App\Utils\NotificationUtil;
 use Illuminate\Routing\Controller;
@@ -44,6 +45,7 @@ use function Couchbase\defaultDecoder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Support\Facades\Session;
 
 class CheckoutController extends Controller
 {
@@ -603,7 +605,7 @@ class CheckoutController extends Controller
                 DB::commit();
 
                 $url = env('POS_URL') . 'set_notify/' . $transaction->id . '/' . $business_id;
-                Http::get($url);
+                // Http::ge t($url);
 
 
                 if ($request->input('is_save_and_print') == 1) {
@@ -688,10 +690,13 @@ class CheckoutController extends Controller
             }
         }else{
             $coupon_discount = $coupon->price;
+            Session::put('coupon_discount', $coupon_discount);
         }
 
         $total_amount  = \Cart::getTotal()  - $coupon_discount ?? 0;
 
+        // dd((Auth::guard('customer')->id()));
+        // dd(\Cart::session(Auth::guard('customer')->id())->getContent()->first());
         return response()->json([
                 'coupon_discount' => $coupon_discount ?? 0,
                 'alert-type' => 'success',
