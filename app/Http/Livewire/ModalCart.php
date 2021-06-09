@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Product;
 use Illuminate\Support\Facades\Auth;
+use Modules\Ecommerce\Http\Controllers\CartsController;
 
 class ModalCart extends Component
 {

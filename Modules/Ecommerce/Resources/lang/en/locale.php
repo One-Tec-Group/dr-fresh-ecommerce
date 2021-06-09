@@ -48,6 +48,12 @@ return [
     'order_terms'       => 'شكراً لاختيارك لنا',
     'back_to_shopping'       => 'الرجوع للتسوق',
     'orderdetails'       => 'تفاصيل الطلب',
+<<<<<<< HEAD
     'offer_product_count' => 'العرض يحتوي علي عدد',
+=======
+    'coupon'       => 'كوبون',
+    'enter_coupon'       => 'ادخل الكوبون',
+    'submit_coupon'       => 'أضف الكوبون',
+>>>>>>> 7f96930a92b023ebf62df0790e739c7017724b30
 
 ];

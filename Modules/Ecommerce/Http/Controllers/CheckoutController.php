@@ -645,4 +645,10 @@ class CheckoutController extends Controller
 
         return redirect()->back()->with($output);
     }
+
+    public function add_coupon(Request $request)
+    {
+        dd($request->all());
+
+    }
 }

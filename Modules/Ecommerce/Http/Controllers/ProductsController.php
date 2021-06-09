@@ -33,6 +33,7 @@ class ProductsController extends Controller
             ->where('products.business_id', config('constants.business_id'))
             ->where('products.not_for_selling',0)
             ->where('products.is_inactive',0)
+            ->whereNotNull('category_id')
 
         ;
 
@@ -143,11 +144,15 @@ class ProductsController extends Controller
     public function show($id)
     {
 
-        $product = Product::where('business_id', config('constants.business_id'))->where('id', $id)->first();
-        $products_like = Product::where('business_id', config('constants.business_id'))->where('category_id', $product->category_id)->where('id','!=', $id)->paginate(15);
+        $product = Product::where('business_id', config('constants.business_id'))->whereNotNull('category_id')->where('id', $id)->first();
+        if ($product){
+
+            $products_like = Product::where('business_id', config('constants.business_id'))->where('category_id', $product->category_id)->where('id','!=', $id)->paginate(15);
 
 
-        return view('ecommerce::products.product', compact('product', 'products_like'));
+            return view('ecommerce::products.product', compact('product', 'products_like'));
+        }
+        return redirect()->route('products.index');
     }
 
     /**
