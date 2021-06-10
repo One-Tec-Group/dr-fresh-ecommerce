@@ -12,24 +12,11 @@ function addToCart(id) {
     });
 }
 
-function increase(id) {
-    var quantity = 1;
-    var url = websiteUrl + '/cart/add';
-    url += '/' + id + '/' + quantity;
-
-    $.ajax({
-        url: url,
-        type: 'GET',
-        success: function (data) {
-            console.log(data);
-            window.livewire.emit('added_product_to_cart');
-        }
-    });
-}
-function decrease(id) {
-    var quantity = 1;
-    var url = websiteUrl + '/cart/decrease';
-    url += '/' + id + '/' + quantity;
+function addOfferToCart(offerId) {
+    var quantity = $('#offer_input_' + offerId).val();
+    console.log(offerId);
+    var url = websiteUrl + '/cart/addOffer';
+    url += '/' + offerId + '/' + quantity;
 
     $.ajax({
         url: url,

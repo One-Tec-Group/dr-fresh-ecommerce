@@ -15,6 +15,7 @@
 //     Route::get('/', 'EcommerceController@index');
 // });
 
+Route::get('/sliders', 'SlidersController@index');
 Route::get('/home', 'Frontend\HomeController@index');
 Route::get('/main', 'EcommerceController@index')->name('ecommerce.home');
 
@@ -32,11 +33,11 @@ Route::prefix('ecommerce')->group(function() {
     //products
     Route::get('products','ProductsController@index')->name('products.index');
     Route::get('products/filter','ProductsController@filter')->name('products.filter');
-    Route::get('product/{id}','ProductsController@show');
+    Route::get('product/{id}','ProductsController@show')->name('products.show');
 
     //Cart
     Route::get('cart/add/{id}/{quantity}','CartsController@add')->name('cart.add');
-    Route::get('cart/decrease/{id}/{quantity}','CartsController@decrease')->name('cart.decrease');
+    Route::get('cart/addOffer/{id}/{quantity}','CartsController@addOffer')->name('cart.addOffer');
     Route::get('cart/remove/{id}','CartsController@remove')->name('cart.remove');
     Route::get('checkout','CartsController@checkout')->name('cart.checkout');
     Route::post('checkout/store','CheckoutController@checkoutStore')->name('cart.checkoutStore');

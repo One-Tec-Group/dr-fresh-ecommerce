@@ -39,17 +39,17 @@
 
     <div class="social-links">
         <div class="social-link">
-            <a href="https://www.facebook.com/D.freshofficial.eg/" target="_blank">
+            <a href="{{ $settings->where('key', 'facebook')->first()->value }}" target="_blank">
                 <img class="w-100" src="{{asset('frontend/images/facebook.svg')}}" alt="facebook logo">
             </a>
         </div>
         <div class="social-link">
-            <a href="https://instagram.com/d.freshofficial?igshid=olkvjx36ce6o" target="_blank">
+            <a href="{{ $settings->where('key', 'instagram')->first()->value }}" target="_blank">
                 <img class="w-100" src="{{asset('frontend/images/instagram.svg')}}" alt="instagram logo">
             </a>
         </div>
         <div class="social-link">
-            <a href="tel:+201113502132" target="_blank">
+            <a href="{{ $settings->where('key', 'twitter')->first()->value }}" target="_blank">
                 <img class="w-100" src="{{asset('frontend/images/telephone.svg')}}" alt="instagram logo">
             </a>
         </div>
@@ -57,14 +57,19 @@
 
     <section class="carousel-slider-main text-center border-top border-bottom bg-white">
         <div class="owl-carousel owl-carousel-slider">
-            <div class="item">
-                <a href="#"><img class="w-100 img-fluid" src="{{ asset('frontend/images/slider 1.png')}}"
-                                         alt="First slide"></a>
-            </div>
-            <div class="item">
+            @foreach ($sliders as $slider)
+                <div class="item">
+                    <a href="{{ $slider->link }}">
+                        <img class="w-100 img-fluid" src="{{ env('POS_URL').$slider->dir }}"
+                                            alt="First slide">
+                    </a>
+                </div>
+            @endforeach
+           
+            {{-- <div class="item">
                 <a href="#"><img class="w-100 img-fluid" src="{{ asset('frontend/images/slider 2.png')}}"
                                          alt="First slide"></a>
-            </div>
+            </div> --}}
             {{--<div class="item">--}}
                 {{--<a href="#"><img class="w-100 img-fluid" src="{{ asset('frontend/images/home-hero.png')}}"--}}
                                          {{--alt="First slide"></a>--}}
@@ -75,20 +80,21 @@
             {{--</div>--}}
         </div>
     </section>
-    <!-- <section class="top-category section-padding">
+
+    <section class="top-category">
         <div class="container">
-            <div class="owl-carousel owl-carousel-category">
+            <div class="row">
                 @forelse($categories as $category)
-                    <div class="item">
+                    <div class="col-4 col-lg-2 mb-3">
                         <div class="category-item">
                             <a href="{{url('ecommerce/products?category='.$category->id)}}">
-                                @if($category->image != null && file_exists(base_path('uploads/img/'.$category->image)))
+                                @if($category->image != null )
 
-                                    <img class="img-fluid" src="{{asset('uploads/img/'.$category->image)}}"
-                                         alt="{{$category->name ?? ''}}">
+                                    <img class="" src="{{env('POS_URL') . "uploads/categories/".$category->image}}"
+                                        alt="{{$category->name ?? ''}}">
                                 @else
-                                    <img class="img-fluid" src="{{asset('frontend/images/placeholder.png')}}"
-                                         alt="{{$category->name ?? ''}}">
+                                    <img class="" src="{{asset('frontend/images/placeholder.png')}}"
+                                        alt="{{$category->name ?? ''}}">
                                 @endif
                                 <h6>{{ $category->name ?? '' }}</h6>
                                 <p>{{$category->products && $category->products->count() ? $category->products->count() : 0 }} @lang('ecommerce::locale.item') </p>
@@ -96,41 +102,15 @@
                         </div>
                     </div>
                 @empty
-                @endforelse
-
+                    @endforelse
             </div>
         </div>
-    </section> -->
-    <section class="top-category">
-        <div class="container">
-
-        <div class="row">
-
-            @forelse($categories as $category)
-                <div class="col-4 col-lg-2 mb-3">
-
-                        <div class="category-item">
-                            <a href="{{url('ecommerce/products?category='.$category->id)}}">
-                                @if($category->image != null )
-
-                                    <img class="" src="{{env('POS_URL') . "uploads/categories/".$category->image}}"
-                                         alt="{{$category->name ?? ''}}">
-                                @else
-                                    <img class="" src="{{asset('frontend/images/placeholder.png')}}"
-                                         alt="{{$category->name ?? ''}}">
-                                @endif
-                                <h6>{{ $category->name ?? '' }}</h6>
-                                <p>{{$category->products && $category->products->count() ? $category->products->count() : 0 }} @lang('ecommerce::locale.item') </p>
-                            </a>
-                        </div>
-                </div>
-
-            @empty
-                @endforelse
-        </div>
-        </div>
-
     </section>
+
+    @if($offers->count() > 0)
+        @include("ecommerce::frontend.home.offers")
+    @endif
+    
     @forelse($categories as $category)
         <section class="product-items-slider section-padding">
             <div class="container">
@@ -142,16 +122,23 @@
                 </div>
                 <div class="owl-carousel owl-carousel-featured">
                     @forelse($category->products->take(12) as $product)
+                        @php
+                            $cart_controller = new \Modules\Ecommerce\Http\Controllers\CartsController();
+                            $data_with_discount = $cart_controller->set_discount($product,$product->variations->first()->default_sell_price,true);
+                        @endphp
                         <div class="item">
                             <div class="product">
                                 <a href="{{url('ecommerce/product/'.$product->id)}}">
                                     <div>
                                         <div class="product-header">
-                                            <span class="badge badge-success">10% خصم</span>
+                                            @if($data_with_discount['discount_value'] != 0)
+                                            <span class="badge badge-success">{{$data_with_discount['discount_value']}}{{$data_with_discount['discount_type'] == 'percentage'? '%': __('ecommerce::locale.pound')}} خصم</span>
+                                            @endif
                                             @if($product->image != null )
 
                                                 <img class="img-fluid"  src="{{env('POS_URL') . "uploads/img/".$product->image}}"
                                                      alt="{{$product->name ?? ''}}">
+
                                             @else
                                                 <img class="img-fluid"
                                                      src="{{asset('frontend/images/placeholder.png')}}"
@@ -169,8 +156,15 @@
                                             <h6><strong><span
                                                         class="mdi mdi-approval"></span> @lang('ecommerce::locale.available_in')
                                                 </strong> {{ $product->unit->actual_name }}</h6>
-                                    <h6 class="offer-price mb-0">{{(double)$product->variations->first()->default_sell_price ?? ''}} @lang('ecommerce::locale.pound') </h6>
-                                            <p class="regular-price"><i class="mdi mdi-tag-outline"></i>{{(double)$product->variations->first()->default_sell_price + ((double)$product->variations->first()->default_sell_price / 10) ?? ''}} @lang('ecommerce::locale.pound')</p>
+                                            <h6 class="offer-price mb-0">
+                                                {{ $data_with_discount['price_after_discount'] ??  (double)$product->variations->first()->default_sell_price ?? ''}} @lang('ecommerce::locale.pound')
+                                            </h6>
+                                            @if($data_with_discount['discount_value'] != 0)
+
+                                            <p class="regular-price"><i class="mdi mdi-tag-outline"></i>
+                                                {{ $data_with_discount['price_after_discount'] & $data_with_discount['price_after_discount'] < (double)$product->variations->first()->default_sell_price ? (double)$product->variations->first()->default_sell_price : ''}}
+                                                @lang('ecommerce::locale.pound')</p>
+                                            @endif
 
                                         </div>
                                     </div>
@@ -191,7 +185,6 @@
                                             <!-- @lang('ecommerce::locale.add_to_cart') -->
                                             </button>
                                 </div>
-
                             </div>
                         </div>
                     @empty
@@ -201,4 +194,7 @@
         </section>
     @empty
     @endforelse
+    
 @endsection
+
+

@@ -4,10 +4,14 @@ namespace Modules\Ecommerce\Http\Controllers;
 
 use App\Category;
 use App\Product;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Modules\Ecommerce\Entities\Offer;
+use Modules\Ecommerce\Entities\Setting;
+use Modules\Ecommerce\Entities\Slider;
 
 class EcommerceController extends Controller
 {
@@ -17,6 +21,11 @@ class EcommerceController extends Controller
      */
     public function index()
     {
+        $sliders = Slider::where('status', 'active')->get();
+        $settings = Setting::all();
+        $todayDate = date('Y-m-d');
+        $offers = Offer::where('business_id', config('constants.business_id'))->validOffers($todayDate);
+        // dd($offers->count());
         $categories = Category::where('business_id', config('constants.business_id'))->with('products')->get();
         $products = Product::where('business_id', config('constants.business_id'))->take(16)->get();
         if (Auth::guard('customer')->check()) {
@@ -24,7 +33,7 @@ class EcommerceController extends Controller
         }
 
 
-        return view('ecommerce::frontend.home.home', compact('categories', 'products'));
+        return view('ecommerce::frontend.home.home', compact('categories', 'products', 'sliders', 'settings', 'offers'));
     }
 
 

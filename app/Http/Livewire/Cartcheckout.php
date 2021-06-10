@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
 class Cartcheckout extends Component
@@ -13,6 +14,7 @@ class Cartcheckout extends Component
     public $subtotal = 0;
     public $delivery_cost = 0;
     public $total_with_delivery = 0;
+    public $coupon_discount = 0;
 
     protected $listeners = [
         'added_product_to_cart' => 'render',
@@ -31,7 +33,8 @@ class Cartcheckout extends Component
         $this->cart_items = \Cart::getContent()->toArray();
         $this->count = \Cart::getContent()->count();
         $this->subtotal = \Cart::getSubTotal();
-        $this->total_with_delivery = \Cart::getSubTotal() + $this->delivery_cost;
+        $this->coupon_discount = count($this->cart_items) == 0 ? 0 : Session::get('coupon_discount');
+        $this->total_with_delivery = \Cart::getSubTotal() + $this->delivery_cost - $this->coupon_discount;
 
         return view('livewire.cartcheckout');
     }

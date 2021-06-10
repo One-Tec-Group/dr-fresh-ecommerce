@@ -48,8 +48,11 @@ return [
     'order_terms'       => 'شكراً لاختيارك لنا',
     'back_to_shopping'       => 'الرجوع للتسوق',
     'orderdetails'       => 'تفاصيل الطلب',
+    'offer_product_count' => 'العرض يحتوي علي عدد',
     'coupon'       => 'كوبون',
     'enter_coupon'       => 'ادخل الكوبون',
     'submit_coupon'       => 'أضف الكوبون',
+    'no_coupon_match'       => 'هذا الكوبون غير صالح',
+    'no_user_login'       => 'يجب تسجيل الدخول اولا ',
 
 ];
