@@ -131,11 +131,14 @@
                                 <a href="{{url('ecommerce/product/'.$product->id)}}">
                                     <div>
                                         <div class="product-header">
+                                            @if($data_with_discount['discount_value'] != 0)
                                             <span class="badge badge-success">{{$data_with_discount['discount_value']}}{{$data_with_discount['discount_type'] == 'percentage'? '%': __('ecommerce::locale.pound')}} خصم</span>
+                                            @endif
                                             @if($product->image != null )
 
                                                 <img class="img-fluid"  src="{{env('POS_URL') . "uploads/img/".$product->image}}"
                                                      alt="{{$product->name ?? ''}}">
+
                                             @else
                                                 <img class="img-fluid"
                                                      src="{{asset('frontend/images/placeholder.png')}}"
@@ -156,9 +159,12 @@
                                             <h6 class="offer-price mb-0">
                                                 {{ $data_with_discount['price_after_discount'] ??  (double)$product->variations->first()->default_sell_price ?? ''}} @lang('ecommerce::locale.pound')
                                             </h6>
+                                            @if($data_with_discount['discount_value'] != 0)
+
                                             <p class="regular-price"><i class="mdi mdi-tag-outline"></i>
                                                 {{ $data_with_discount['price_after_discount'] & $data_with_discount['price_after_discount'] < (double)$product->variations->first()->default_sell_price ? (double)$product->variations->first()->default_sell_price : ''}}
                                                 @lang('ecommerce::locale.pound')</p>
+                                            @endif
 
                                         </div>
                                     </div>

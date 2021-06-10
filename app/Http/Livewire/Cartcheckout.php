@@ -17,11 +17,9 @@ class Cartcheckout extends Component
     public $coupon_discount = 0;
 
     protected $listeners = [
-        'decrease_product',
-        'increase_product',
-        'added_product_to_cart',
+        'added_product_to_cart' => 'render',
         'delivery_cost',
-        'deleted_product_from_cart'
+        'deleted_product_from_cart' => 'render'
     ];
 
 
@@ -42,24 +40,6 @@ class Cartcheckout extends Component
     }
 
 
-
-    public function added_product_to_cart()
-    {
-        $this->render();
-    }
-
-    public function deleted_product_from_cart()
-    {
-        $this->render();
-    }
-    public function decrease_product()
-    {
-        $this->render();
-    }
-    public function increase_product()
-    {
-        $this->render();
-    }
     public function delivery_cost($cost)
     {
         $this->delivery_cost = $cost;

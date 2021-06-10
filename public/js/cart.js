@@ -57,20 +57,5 @@ var value = parseInt(input.val());
     }
 }
 
-// $('.increase').click(function () {
-//     var inputId = $(this).attr('input');
-//
-//     var value = Number($('#input_' + inputId).val()) + 1;
-//     $('#input_' + inputId).val(value);
-// });
-//
-// $('.decrease').click(function () {
-//     var inputId = $(this).attr('input');
-//     var value = Number($('#input_' + inputId).val()) - 1;
-//     if (value >= 1) {
-//         $('#input_' + inputId).val(value);
-//
-//     }
-// });
 
 

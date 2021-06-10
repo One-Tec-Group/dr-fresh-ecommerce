@@ -40,15 +40,6 @@ class ModalCart extends Component
     }
 
 
-    public function added_product_to_cart()
-    {
-        $this->render();
-    }
-
-    public function deleted_product_from_cart()
-    {
-        $this->render();
-    }
 
     public function increase_product()
     {

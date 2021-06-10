@@ -26,10 +26,10 @@
                                                value="{{$item['quantity']}}"
 
                                         >
-                                        <button class="quantity-btn" wire:click="decrease({{$cart_item->id}})">
+                                        <button class="quantity-btn" onclick="decrease({{$cart_item->id}})">
                                             <i class="mdi mdi-minus"></i>
                                         </button>
-                                        <button class="quantity-btn" wire:click="increase({{$cart_item->id}})">
+                                        <button class="quantity-btn" onclick="increase({{$cart_item->id}})">
                                             <i class="mdi mdi-plus"></i>
                                         </button>
                                     </div>
