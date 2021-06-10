@@ -5,7 +5,6 @@ namespace Modules\Ecommerce\Http\Controllers;
 use App\Discount;
 use App\Product;
 use App\DeliveryGroups;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -170,8 +169,9 @@ class CartsController extends Controller
         $product = Product::where('business_id', config('constants.business_id'))->where('id', $id)->with('variation_location_details')->first();
         $check_cart = \Cart::get($id);
 
-
         $price = (double)$product->variations->first()->default_sell_price;
+
+        $price = $this->set_discount($product,$price) ?? $price;
 
 
         if ($check_cart) {
