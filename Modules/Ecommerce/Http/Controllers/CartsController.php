@@ -172,63 +172,100 @@ class CartsController extends Controller
         $discount = Discount::with('variations')->where('business_id', config('constants.business_id'))
             ->where('is_active', 1)->where('starts_at', '<=', Carbon::now())
             ->where('ends_at', '>=', Carbon::now())
-            ->where(function($query) use ($product){
+            ->where(function ($query) use ($product) {
                 $query->where('category_id', $product->category_id)
-                ->orWhere('category_id', null);
+                    ->orWhere('category_id', null);
             })
             ->orderBy('priority', 'desc')
             ->first();
 
-        $price_after_discount = null;
+        $price_after_discount = $price;
         $discount_value = null;
         $discount_type = null;
-        if (!$discount->category_id){
-            foreach ($discount->variations as $variation){
-                if ($variation->product_id == $product->id){
-                    if($discount->discount_type == 'percentage'){
+
+        if ( isset($discount) && !$discount->category_id) {
+            foreach ($discount->variations as $variation) {
+                if ($variation->product_id == $product->id) {
+                    if ($discount->discount_type == 'percentage') {
                         //percentage
-                        $dis = $price * $discount->discount_amount/100;
+                        $dis = $price * $discount->discount_amount / 100;
                         $price_after_discount = $price - $dis;
                         $discount_value = $discount->discount_amount;
                         $discount_type = 'percentage';
 
-                    }else{
+                    } else {
                         //fixed
                         $price_after_discount = $price - $discount->discount_amount;
                         $discount_value = $discount->discount_amount;
                         $discount_type = 'fixed';
                     }
-                // }
-            }else{
+                } else {
 
-            if($discount->discount_type == 'percentage'){
-                //percentage
-                $dis = $price * $discount->discount_amount/100;
-                $price_after_discount = $price - $dis;
-                $discount_value = $discount->discount_amount;
-                $discount_type = 'percentage';
+                    if ($discount->discount_type == 'percentage') {
+                        //percentage
+                        $dis = $price * $discount->discount_amount / 100;
+                        $price_after_discount = $price - $dis;
+                        $discount_value = $discount->discount_amount;
+                        $discount_type = 'percentage';
 
-            }else{
-                //fixed
-                $price_after_discount = $price - $discount->discount_amount;
-                $discount_value = $discount->discount_amount;
-                $discount_type = 'fixed';
+                    } else {
+                        //fixed
+                        $price_after_discount = $price - $discount->discount_amount;
+                        $discount_value = $discount->discount_amount;
+                        $discount_type = 'fixed';
+                    }
+                }
+
+                if ($with_type) {
+                    $data = [];
+                    $data['discount_value'] = (double)$discount_value;
+                    $data['discount_type'] = $discount_type;
+                    $data['price_after_discount'] = $price_after_discount;
+
+                    return $data;
+                }
             }
         }
-
-        if ($with_type){
-            $data =[];
-            $data['discount_value'] = (double)$discount_value;
-            $data['discount_type'] = $discount_type;
+        if ($with_type) {
+            $data = [];
+            $data['discount_value'] = 0;
+            $data['discount_type'] = 0;
             $data['price_after_discount'] = $price_after_discount;
 
             return $data;
         }
         return $price_after_discount;
     }
+    public function decrease($id, $quantity)
+    {
 
-    
-}
+        if (Auth::guard('customer')->check()) {
+            \Cart::session(Auth::guard('customer')->id());
+        }
 
+
+        $product = Product::where('business_id', config('constants.business_id'))->where('id', $id)->with('variation_location_details')->first();
+        $check_cart = \Cart::get($id);
+
+        $price = (double)$product->variations->first()->default_sell_price;
+
+        $price = $this->set_discount($product,$price) ?? $price;
+
+
+        if ($check_cart) {
+
+
+                $this->update(
+                    $id,
+                    - $quantity,
+                    $price
+                );
+
+        }
+
+
+
+        return response()->json(true, Response::HTTP_CREATED);
     }
+
 }

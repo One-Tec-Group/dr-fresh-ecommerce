@@ -317,8 +317,10 @@ class CheckoutController extends Controller
                         $offer_quantity = $product->quantity * $product->associatedModel->quantity;
                         $variation_id = $product->associatedModel->product->variations->first()->id;
                     }else{
+                        // dd($product->associatedModel['variations'][0]['id']);
 
-                        $variation_id = $product->associatedModel->variations->first()->id;
+                        // $variation_id = $product->associatedModel->variations->first()->id;
+                        $variation_id = $product->associatedModel['variations'][0]['id'];
                     }
                     array_push($input['products'], array(
                         "product_type" => $product->associatedModel['type'],
@@ -605,7 +607,7 @@ class CheckoutController extends Controller
                 DB::commit();
 
                 $url = env('POS_URL') . 'set_notify/' . $transaction->id . '/' . $business_id;
-                // Http::ge t($url);
+                Http::get($url);
 
 
                 if ($request->input('is_save_and_print') == 1) {
